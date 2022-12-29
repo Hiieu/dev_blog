@@ -3,14 +3,25 @@ title: OPA - Signing bundles
 date: '2022-12-28'
 tags: ['opa', 'code', 'signing', 'bundles']
 draft: false
-summary: Example of a markdown file with code blocks and syntax highlighting
+summary: Signing OPA (Open Policy Agent) bundles and verifying them with public keys
 ---
 
-A sample post with markdown.
+In OPA, bundles can be digitally signed to prove that they come from a trusted source and to protect their integrity. This is a security measure to ensure that the bundles have not been tampered by a bad actor.
 
-## Inline Highlighting
+## Generate private and public keys
+### Generate a private key
 
-Sample of inline highlighting `sum = parseInt(num1) + parseInt(num2)`
+This will be used to sign a bundle:
+```bash
+openssl genrsa -out private.pem 2048
+```
+
+### Generate a public key
+
+This will be used to verify a bundle:
+```bash
+openssl rsa -in private.pem -pubout -out public.pem
+```	
 
 ## Code Blocks
 
