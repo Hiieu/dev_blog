@@ -23,7 +23,19 @@ Use this example to get started with signing bundles:
     ```bash
     # Go to the bundle/ directory
     cd bundle
-    # Sign the content in the foo directory 
+    ```
+    ```bash
+    # Usage of the sign command 
+    opa sign --help
+    Generate an OPA bundle signature.
+
+    The 'sign' command generates a digital signature for policy bundles. It generates a
+    ".signatures.json" file that dictates which files should be included in the bundle,
+    what their SHA hashes are, and is cryptographically secure.
+    ```
+
+    ```bash
+    # Generate a new signature
     opa sign --signing-key ../private.pem --bundle foo foo/
     # Structure of the directory: 
     tree -a
