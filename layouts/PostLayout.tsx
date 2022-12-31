@@ -12,7 +12,7 @@ import { ReactNode } from 'react'
 import type { Blog, Authors } from 'contentlayer/generated'
 import path from 'path'
 
-const editUrl = (slug) => `${siteMetadata.siteRepo}/blob/main/data/blog/${slug}`
+export const editUrl = (slug) => `${siteMetadata.siteRepo}/blob/main/data/blog/${slug}`
 const discussUrl = (slug) =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(
     `${siteMetadata.siteUrl}/blog/${slug}`
@@ -109,7 +109,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   {'Discuss on Twitter'}
                 </Link> */}
                 {` • `}
-                <Link href={editUrl(`${path.dirname(slug)}`)}>{'View on GitHub'}</Link>
+                <Link href={editUrl(`${slug}.mdx`)}>{'View on GitHub'}</Link>
               </div>
               <Comments frontMatter={content} />
             </div>

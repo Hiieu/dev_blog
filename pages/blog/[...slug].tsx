@@ -3,6 +3,7 @@ import { MDXLayoutRenderer } from '@/components/MDXComponents'
 import { sortedBlogPost, coreContent } from '@/lib/utils/contentlayer'
 import { InferGetStaticPropsType } from 'next'
 import { allBlogs, allAuthors } from 'contentlayer/generated'
+import { editUrl } from '@/layouts/PostLayout'
 
 const DEFAULT_LAYOUT = 'PostLayout'
 
@@ -28,13 +29,15 @@ export const getStaticProps = async ({ params }) => {
     const authorResults = allAuthors.find((p) => p.slug === author)
     return coreContent(authorResults)
   })
-
+  // Path to the demo folder in the repo
+  const demoPath = editUrl(`${params.slug[0]}/demo`)
   return {
     props: {
       post,
       authorDetails,
       prev,
       next,
+      demoPath,
     },
   }
 }
@@ -44,6 +47,7 @@ export default function Blog({
   authorDetails,
   prev,
   next,
+  demoPath,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
@@ -55,6 +59,7 @@ export default function Blog({
           authorDetails={authorDetails}
           prev={prev}
           next={next}
+          demoPath={demoPath}
         />
       ) : (
         <div className="mt-24 text-center">
