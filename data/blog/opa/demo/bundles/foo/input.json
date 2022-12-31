@@ -1,0 +1,5 @@
+{
+    "action": "read",
+    "resource": "dog123",
+    "user": "bob"
+}
