@@ -7,117 +7,132 @@ summary: Signing OPA (Open Policy Agent) bundles and verifying them with public 
 ---
 
 In OPA, bundles can be digitally signed to prove that they come from a trusted source and to protect their integrity. This is a security measure to ensure that the bundles have not been tampered by a bad actor.
-# EXAMPLE 
-Use this example to get started with signing bundles:
+
 ## Steps
+
+Use this example to get started with signing bundles:
+
+<a href={props.demoPath}>LINK</a>
+
 1. ### Generate private and public keys
-    ```bash
-    # Private key: This will be used to sign a bundle:
-    openssl genrsa -out private.pem 2048
-    # Public key: This will be used to verify the bundle:
-    openssl rsa -in private.pem -pubout -out public.pem
-    ```
+   ```bash
+   # Private key: This will be used to sign a bundle:
+   openssl genrsa -out private.pem 2048
+   # Public key: This will be used to verify the bundle:
+   openssl rsa -in private.pem -pubout -out public.pem
+   ```
 1. ### Signing files in the bundle
 
-    This command generates a hash from each file in the `foo/` bundle folder:
-    ```bash
-    # Go to the bundle/ directory
-    cd bundle
-    ```
-    ```bash
-    # Usage of the sign command 
-    opa sign --help
-    Generate an OPA bundle signature.
+   ```bash
+   # Go to the bundle/ directory
+   cd bundle
+   ```
 
-    The 'sign' command generates a digital signature for policy bundles. It generates a
-    ".signatures.json" file that dictates which files should be included in the bundle,
-    what their SHA hashes are, and is cryptographically secure.
-    ```
+   ```bash
+   # Usage of the sign command
+   opa sign --help
+   Generate an OPA bundle signature.
+   The 'sign' command generates a digital signature for policy bundles. It generates a
+   ".signatures.json" file that dictates which files should be included in the bundle,
+   what their SHA hashes are, and is cryptographically secure.
+   ```
 
-    ```bash
-    # Generate a new signature
-    opa sign --signing-key ../private.pem --bundle foo foo/
-    # Structure of the directory: 
-    tree -a
-    .
-    ├── bundles
-    │   └── foo
-    │       ├── .manifest
-    │       ├── .signatures.json
-    │       ├── bar
-    │       │   └── data.json
-    │       ├── input.json
-    │       └── policy.rego
-    ├── private.pem
-    └── public.pem
+   This command generates a hash for each file in the `foo/` bundle folder,
+   so if you change any of the files the hash will change:
 
-    3 directories, 7 files
-    ```
+   ```bash
+   # Generate a new signature
+   opa sign --signing-key ../private.pem --bundle foo -o foo/
+   # Structure of the directory:
+   tree -a
+   .
+   ├── bundles
+   │   └── foo
+   │       ├── .manifest
+   │       ├── .signatures.json
+   │       ├── bar
+   │       │   └── data.json
+   │       ├── input.json
+   │       └── policy.rego
+   ├── private.pem
+   └── public.pem
+
+   3 directories, 7 files
+   ```
 
 1. ### Inspection of the `.signatures.json` file
 
-    ```bash
-    cat foo/.signatures.json 
-    {
-        "signatures": [
-            "eyJhbGciOiJSUzI1NiJ9.eyJmaWxlcyI6W3sibmFtZSI6ImZvby8ubWFuaWZlc3QiLCJoYXNoIjoiNzczNTQ2ODkxMjY3MzY2MTU0NDNkN2EwYTg4MmI0NzY2NDlmZjBiNjg3ZWIyNTkwMmQ4N2M2MWM0MjE1YThjMCIsImFsZ29yaXRobSI6IlNIQS0yNTYifSx7Im5hbWUiOiJmb28vYmFyL2RhdGEuanNvbiIsImhhc2giOiI1YWU3NWY2ZTU0MjUwZTIwNjBlNjUxNjY4NDVhNjkxNTI0MzZmZDU5YzY4NzNkZjdmZjI5YzUzODEzNTk4Y2ZhIiwiYWxnb3JpdGhtIjoiU0hBLTI1NiJ9LHsibmFtZSI6ImZvby9pbnB1dC5qc29uIiwiaGFzaCI6Ijg4YTU2ZjhkZDU5ODUyMTkxN2E3MTdmOWM0ODdlOTA3ZmFjYWQxMzM1M2Q3Mjk1NmI4YjkyNzE1MWQ4ODc0MWUiLCJhbGdvcml0aG0iOiJTSEEtMjU2In0seyJuYW1lIjoiZm9vL3BvbGljeS5yZWdvIiwiaGFzaCI6IjBkNGRhZGQ1MDFmNjA0NDEyZTgyZDlhYjIwZTBiYjYwMzhmYzA3YzE5MjVkMDU4Njg2NDExY2E1ZTRmZWExMzgiLCJhbGdvcml0aG0iOiJTSEEtMjU2In1dfQ.omDkCiD6OSi0RHG1obLTI0kD8lfUxmVVHCCLj3nfvespInae3V_XNGoDv8KPU9lX1nGdJzydY9MqEC98luB-jrdrEaPlxv8xm8XCq3MymlVEwJ1fCVR24ToEWIKvzSmGAJqEkUIhnniyxd5aKHBzCFKumpE1D9hM3m8E1_XsBuO1XxeRrFxqFBnjpaLtlcC2EGMT-9bwyOysmAX-LihU8Zk2KVaePHOoml2w0V2_it5e4KMJkDCaN0P5xszFeLuK62zxz6hO305Nz9m-pLcNi4lR1WsWEHbmtaIuugz9zjSzLl0tVfIHIjS7cj6kkcOsNYqJGgxGDGOKcZhMMi6fCQ"
-        ]
-    }
-    ```
-    Decode the signature - JSON Web Token (JWT) 
-    ```bash
-    cat foo/.signatures.json | jq '.signatures[0]' | jwt
+   ```bash
+   cat foo/.signatures.json
+   ```
 
-    To verify on jwt.io:
+   ```json
+   {
+     "signatures": [
+       "eyJhbGciOiJSUzI1NiJ9.eyJmaWxlcyI6W3sibmFtZSI6ImZvby8ubWFuaWZlc3QiLCJoYXNoIjoiNzczNTQ2ODkxMjY3MzY2MTU0NDNkN2EwYTg4MmI0NzY2NDlmZjBiNjg3ZWIyNTkwMmQ4N2M2MWM0MjE1YThjMCIsImFsZ29yaXRobSI6IlNIQS0yNTYifSx7Im5hbWUiOiJmb28vYmFyL2RhdGEuanNvbiIsImhhc2giOiI1YWU3NWY2ZTU0MjUwZTIwNjBlNjUxNjY4NDVhNjkxNTI0MzZmZDU5YzY4NzNkZjdmZjI5YzUzODEzNTk4Y2ZhIiwiYWxnb3JpdGhtIjoiU0hBLTI1NiJ9LHsibmFtZSI6ImZvby9pbnB1dC5qc29uIiwiaGFzaCI6Ijg4YTU2ZjhkZDU5ODUyMTkxN2E3MTdmOWM0ODdlOTA3ZmFjYWQxMzM1M2Q3Mjk1NmI4YjkyNzE1MWQ4ODc0MWUiLCJhbGdvcml0aG0iOiJTSEEtMjU2In0seyJuYW1lIjoiZm9vL3BvbGljeS5yZWdvIiwiaGFzaCI6IjBkNGRhZGQ1MDFmNjA0NDEyZTgyZDlhYjIwZTBiYjYwMzhmYzA3YzE5MjVkMDU4Njg2NDExY2E1ZTRmZWExMzgiLCJhbGdvcml0aG0iOiJTSEEtMjU2In1dfQ.omDkCiD6OSi0RHG1obLTI0kD8lfUxmVVHCCLj3nfvespInae3V_XNGoDv8KPU9lX1nGdJzydY9MqEC98luB-jrdrEaPlxv8xm8XCq3MymlVEwJ1fCVR24ToEWIKvzSmGAJqEkUIhnniyxd5aKHBzCFKumpE1D9hM3m8E1_XsBuO1XxeRrFxqFBnjpaLtlcC2EGMT-9bwyOysmAX-LihU8Zk2KVaePHOoml2w0V2_it5e4KMJkDCaN0P5xszFeLuK62zxz6hO305Nz9m-pLcNi4lR1WsWEHbmtaIuugz9zjSzLl0tVfIHIjS7cj6kkcOsNYqJGgxGDGOKcZhMMi6fCQ"
+     ]
+   }
+   ```
 
-    https://jwt.io/#id_token="eyJhbGciOiJSUzI1NiJ9.eyJmaWxlcyI6W3sibmFtZSI6ImZvby8ubWFuaWZlc3QiLCJoYXNoIjoiNzczNTQ2ODkxMjY3MzY2MTU0NDNkN2EwYTg4MmI0NzY2NDlmZjBiNjg3ZWIyNTkwMmQ4N2M2MWM0MjE1YThjMCIsImFsZ29yaXRobSI6IlNIQS0yNTYifSx7Im5hbWUiOiJmb28vYmFyL2RhdGEuanNvbiIsImhhc2giOiI1YWU3NWY2ZTU0MjUwZTIwNjBlNjUxNjY4NDVhNjkxNTI0MzZmZDU5YzY4NzNkZjdmZjI5YzUzODEzNTk4Y2ZhIiwiYWxnb3JpdGhtIjoiU0hBLTI1NiJ9LHsibmFtZSI6ImZvby9pbnB1dC5qc29uIiwiaGFzaCI6Ijg4YTU2ZjhkZDU5ODUyMTkxN2E3MTdmOWM0ODdlOTA3ZmFjYWQxMzM1M2Q3Mjk1NmI4YjkyNzE1MWQ4ODc0MWUiLCJhbGdvcml0aG0iOiJTSEEtMjU2In0seyJuYW1lIjoiZm9vL3BvbGljeS5yZWdvIiwiaGFzaCI6IjBkNGRhZGQ1MDFmNjA0NDEyZTgyZDlhYjIwZTBiYjYwMzhmYzA3YzE5MjVkMDU4Njg2NDExY2E1ZTRmZWExMzgiLCJhbGdvcml0aG0iOiJTSEEtMjU2In1dfQ.omDkCiD6OSi0RHG1obLTI0kD8lfUxmVVHCCLj3nfvespInae3V_XNGoDv8KPU9lX1nGdJzydY9MqEC98luB-jrdrEaPlxv8xm8XCq3MymlVEwJ1fCVR24ToEWIKvzSmGAJqEkUIhnniyxd5aKHBzCFKumpE1D9hM3m8E1_XsBuO1XxeRrFxqFBnjpaLtlcC2EGMT-9bwyOysmAX-LihU8Zk2KVaePHOoml2w0V2_it5e4KMJkDCaN0P5xszFeLuK62zxz6hO305Nz9m-pLcNi4lR1WsWEHbmtaIuugz9zjSzLl0tVfIHIjS7cj6kkcOsNYqJGgxGDGOKcZhMMi6fCQ"
+   Decode the signature - JSON Web Token (JWT)
+
+   ```bash
+   cat foo/.signatures.json | jq '.signatures[0]' | jwt
+   ```
+
+   ```json
+   To verify on jwt.io:
+
+   https://jwt.io/#id_token="eyJhbGciOiJSUzI1NiJ9.eyJmaWxlcyI6W3sibmFtZSI6ImZvby8ubWFuaWZlc3QiLCJoYXNoIjoiNzczNTQ2ODkxMjY3MzY2MTU0NDNkN2EwYTg4MmI0NzY2NDlmZjBiNjg3ZWIyNTkwMmQ4N2M2MWM0MjE1YThjMCIsImFsZ29yaXRobSI6IlNIQS0yNTYifSx7Im5hbWUiOiJmb28vYmFyL2RhdGEuanNvbiIsImhhc2giOiI1YWU3NWY2ZTU0MjUwZTIwNjBlNjUxNjY4NDVhNjkxNTI0MzZmZDU5YzY4NzNkZjdmZjI5YzUzODEzNTk4Y2ZhIiwiYWxnb3JpdGhtIjoiU0hBLTI1NiJ9LHsibmFtZSI6ImZvby9pbnB1dC5qc29uIiwiaGFzaCI6Ijg4YTU2ZjhkZDU5ODUyMTkxN2E3MTdmOWM0ODdlOTA3ZmFjYWQxMzM1M2Q3Mjk1NmI4YjkyNzE1MWQ4ODc0MWUiLCJhbGdvcml0aG0iOiJTSEEtMjU2In0seyJuYW1lIjoiZm9vL3BvbGljeS5yZWdvIiwiaGFzaCI6IjBkNGRhZGQ1MDFmNjA0NDEyZTgyZDlhYjIwZTBiYjYwMzhmYzA3YzE5MjVkMDU4Njg2NDExY2E1ZTRmZWExMzgiLCJhbGdvcml0aG0iOiJTSEEtMjU2In1dfQ.omDkCiD6OSi0RHG1obLTI0kD8lfUxmVVHCCLj3nfvespInae3V_XNGoDv8KPU9lX1nGdJzydY9MqEC98luB-jrdrEaPlxv8xm8XCq3MymlVEwJ1fCVR24ToEWIKvzSmGAJqEkUIhnniyxd5aKHBzCFKumpE1D9hM3m8E1_XsBuO1XxeRrFxqFBnjpaLtlcC2EGMT-9bwyOysmAX-LihU8Zk2KVaePHOoml2w0V2_it5e4KMJkDCaN0P5xszFeLuK62zxz6hO305Nz9m-pLcNi4lR1WsWEHbmtaIuugz9zjSzLl0tVfIHIjS7cj6kkcOsNYqJGgxGDGOKcZhMMi6fCQ"
 
 
-    ✻ Header
-    {
-    "alg": "RS256"
-    }
+   ✻ Header
+   {
+   "alg": "RS256"
+   }
 
-    ✻ Payload
-    {
-    "files": [
-        {
-        "name": "foo/.manifest",
-        "hash": "77354689126736615443d7a0a882b476649ff0b687eb25902d87c61c4215a8c0",
-        "algorithm": "SHA-256"
-        },
-        {
-        "name": "foo/bar/data.json",
-        "hash": "5ae75f6e54250e2060e65166845a69152436fd59c6873df7ff29c53813598cfa",
-        "algorithm": "SHA-256"
-        },
-        {
-        "name": "foo/input.json",
-        "hash": "88a56f8dd598521917a717f9c487e907facad13353d72956b8b927151d88741e",
-        "algorithm": "SHA-256"
-        },
-        {
-        "name": "foo/policy.rego",
-        "hash": "0d4dadd501f604412e82d9ab20e0bb6038fc07c1925d058686411ca5e4fea138",
-        "algorithm": "SHA-256"
-        }
-    ]
-    }
+   ✻ Payload
+   {
+   "files": [
+       {
+       "name": "foo/.manifest",
+       "hash": "77354689126736615443d7a0a882b476649ff0b687eb25902d87c61c4215a8c0",
+       "algorithm": "SHA-256"
+       },
+       {
+       "name": "foo/bar/data.json",
+       "hash": "5ae75f6e54250e2060e65166845a69152436fd59c6873df7ff29c53813598cfa",
+       "algorithm": "SHA-256"
+       },
+       {
+       "name": "foo/input.json",
+       "hash": "88a56f8dd598521917a717f9c487e907facad13353d72956b8b927151d88741e",
+       "algorithm": "SHA-256"
+       },
+       {
+       "name": "foo/policy.rego",
+       "hash": "0d4dadd501f604412e82d9ab20e0bb6038fc07c1925d058686411ca5e4fea138",
+       "algorithm": "SHA-256"
+       }
+   ]
+   }
 
-    ✻ Signature omDkCiD6OSi0RHG1obLTI0kD8lfUxmVVHCCLj3nfvespInae3V_XNGoDv8KPU9lX1nGdJzydY9MqEC98luB-jrdrEaPlxv8xm8XCq3MymlVEwJ1fCVR24ToEWIKvzSmGAJqEkUIhnniyxd5aKHBzCFKumpE1D9hM3m8E1_XsBuO1XxeRrFxqFBnjpaLtlcC2EGMT-9bwyOysmAX-LihU8Zk2KVaePHOoml2w0V2_it5e4KMJkDCaN0P5xszFeLuK62zxz6hO305Nz9m-pLcNi4lR1WsWEHbmtaIuugz9zjSzLl0tVfIHIjS7cj6kkcOsNYqJGgxGDGOKcZhMMi6fCQ"
-    ```
+   ✻ Signature omDkCiD6OSi0RHG1obLTI0kD8lfUxmVVHCCLj3nfvespInae3V_XNGoDv8KPU9lX1nGdJzydY9MqEC98luB-jrdrEaPlxv8xm8XCq3MymlVEwJ1fCVR24ToEWIKvzSmGAJqEkUIhnniyxd5aKHBzCFKumpE1D9hM3m8E1_XsBuO1XxeRrFxqFBnjpaLtlcC2EGMT-9bwyOysmAX-LihU8Zk2KVaePHOoml2w0V2_it5e4KMJkDCaN0P5xszFeLuK62zxz6hO305Nz9m-pLcNi4lR1WsWEHbmtaIuugz9zjSzLl0tVfIHIjS7cj6kkcOsNYqJGgxGDGOKcZhMMi6fCQ"
+   ```
 
 1. ### Sign and create the bundle archive
-    For the sake of this demo we can re-use the same key pair.
-    The private key is used to re-sign the JWT and the public key is used to verify the signature. 
-    ```bash
-    opa build --help                                                   ✔  
-    Build an OPA bundle.
 
-    The 'build' command packages OPA policy and data files into bundles. Bundles are
-    gzipped tarballs containing policies and data.(...)
-    ```
+   For the sake of this demo we can re-use the same key pair.
+   The private key is used to re-sign the JWT and the public key is used to verify the signature.
 
-    ```bash
-    opa build -t bundle -b foo -s foo/.signatures.json foo
-    ```
+   ```bash
+   opa build --help                                                   ✔
+   Build an OPA bundle.
+
+   The 'build' command packages OPA policy and data files into bundles. Bundles are
+   gzipped tarballs containing policies and data.(...)
+   ```
+
+   ```bash
+   opa build -t bundle -b foo -s foo/.signatures.json foo
+   ```
