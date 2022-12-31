@@ -2,7 +2,7 @@ const siteMetadata = {
   title: 'A dev blog by Hieu Doan',
   author: 'Hieu Doan',
   headerTitle: 'Dev Blog',
-  description: '"Join me on my developer journey as I document the problems I face and the solutions I find. By sharing my experiences, I hope to help others."',
+  description: '"By sharing my experiences, I hope to help others."',
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
