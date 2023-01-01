@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTheme } from 'next-themes'
 
 import siteMetadata from '@/data/siteMetadata'
@@ -28,10 +28,11 @@ const Giscus = () => {
       metadata,
       inputPosition,
       lang,
+      url,
     } = siteMetadata?.comment?.giscusConfig
 
     const script = document.createElement('script')
-    script.src = 'https://giscus.app/client.js'
+    script.src = `${url}/client.js`
     script.setAttribute('data-repo', repo)
     script.setAttribute('data-repo-id', repositoryId)
     script.setAttribute('data-category', category)

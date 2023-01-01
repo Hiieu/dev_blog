@@ -44,6 +44,8 @@ const siteMetadata = {
       repositoryId: process.env.NEXT_PUBLIC_GISCUS_REPOSITORY_ID,
       category: process.env.NEXT_PUBLIC_GISCUS_CATEGORY,
       categoryId: process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID,
+      lang: process.env.NEXT_PUBLIC_GISCUS_LANG,
+      url: process.env.NEXT_PUBLIC_GISCUS_URL,
       mapping: 'pathname', // supported options: pathname, url, title
       reactions: '1', // Emoji reactions: 1 = enable / 0 = disable
       // Send discussion metadata periodically to the parent window: 1 = enable / 0 = disable
