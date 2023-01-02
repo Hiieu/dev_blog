@@ -41,3 +41,6 @@ yarn-error.log*
 
 # Ignore configurations in .env
 .env
+
+# IDE
+.vscode
