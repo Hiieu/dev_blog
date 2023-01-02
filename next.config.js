@@ -4,7 +4,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
 
-const { giscussUrl } = require('./data/siteMetadata')?.comment?.giscusConfig
+const { url: giscussUrl } = require('./data/siteMetadata')?.comment?.giscusConfig
 
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
