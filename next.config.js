@@ -65,7 +65,7 @@ module.exports = Object.assign(
   {
     images: {
       loader: 'akamai',
-      path: '',
+      path: '/',
     },
   },
   withContentlayer(
