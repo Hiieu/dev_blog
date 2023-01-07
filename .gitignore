@@ -38,3 +38,9 @@ yarn-error.log*
 
 # Contentlayer
 .contentlayer
+
+# Ignore configurations in .env
+.env
+
+# IDE
+.vscode
