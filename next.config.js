@@ -1,10 +1,14 @@
+const siteMetadata = require('./data/siteMetadata')
+let giscussUrl
+if (siteMetadata && siteMetadata.comment && siteMetadata.comment.giscusConfig) {
+  giscussUrl = siteMetadata.comment.giscusConfig.url
+}
+
 const { withContentlayer } = require('next-contentlayer')
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
-
-const { url: giscussUrl } = require('./data/siteMetadata')?.comment?.giscusConfig
 
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
